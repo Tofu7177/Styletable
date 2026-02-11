@@ -1,0 +1,194 @@
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '/' && typedValue.length === 0) {
+        commandMode = true;
+        typedValue = '/';
+        searchText.textContent = typedValue;
+        searchText.classList.add('command');
+        e.preventDefault();
+        return;
+      }
+    
+      if (commandMode) {
+        if (e.key.length === 1) {
+          typedValue += e.key;
+          searchText.textContent = typedValue;
+        } else if (e.key === 'Backspace') {
+          typedValue = typedValue.slice(0, -1);
+          if (typedValue === '') {
+            commandMode = false;
+            searchText.classList.remove('command');
+            searchText.textContent = getGreeting();
+          } else searchText.textContent = typedValue;
+        } else if (e.key === 'Enter') {
+          const parts = typedValue.split(' ');
+          if (parts[0] === '/changename' && parts[1]) {
+            name = parts.slice(1).join(' ');
+            saveName(); // save permanently
+          } 
+          else if (parts[0] === '/setblock' && parts.length >= 3) {
+            const block = Number(parts[1]);
+            const subject = parts[2].toLowerCase();
+
+            if (block >= 1 && block <= 6 && iconMap[subject]) {
+              blockSubjects[block] = subject;
+              localStorage.setItem('blockSubjects', JSON.stringify(blockSubjects));
+              location.reload();
+            }
+          }
+          else if (parts[0] === '/reset') {
+            localStorage.removeItem('userData');
+            localStorage.removeItem('blockSubjects');
+            localStorage.removeItem('inserts');
+            localStorage.removeItem('helpTipShownDate');
+            localStorage.removeItem('helpTipSeenDate');
+            localStorage.removeItem('goodToGoSeenDate');
+            localStorage.removeItem('bgSettings');
+            localStorage.removeItem('userFont');
+            location.reload();
+          }
+          else if (parts[0] === '/help') {
+            localStorage.setItem('helpTipSeenDate', todayKey());
+            localStorage.setItem('helpTipShownDate', todayKey());
+            window.location.href = 'help.html';
+
+          }
+          else if (parts[0] === '/insert' && parts[1] === 'p0' && parts.length >= 4) {
+            const subject = parts[2].toLowerCase();
+            const day = Number(parts[3]);
+                    
+            if (day >= 1 && day <= 10 && iconMap[subject]) {
+              inserts.p0[day] = subject;
+              localStorage.setItem('inserts', JSON.stringify(inserts));
+              location.reload();
+            }
+          }
+          else if (parts[0] === '/insert' && parts[1] === 'free' && parts.length >= 4) {
+            const day = Number(parts[2]);
+            const period = Number(parts[3]);
+                    
+            if (
+              day >= 1 && day <= 10 &&
+              period >= 0 && period <= 6
+            ) {
+              const key = `${day}-${period}`;
+              inserts.free[key] = true;
+              localStorage.setItem('inserts', JSON.stringify(inserts));
+              location.reload();
+            }
+          }
+          else if (parts[0] === '/remove' && parts[1] === 'all') {
+            inserts.p0 = {};
+            inserts.free = {};
+
+            localStorage.setItem('inserts', JSON.stringify(inserts));
+            location.reload();
+          }
+          else if (parts[0] === '/remove' && parts.length >= 3) {
+            const day = Number(parts[1]);
+            const period = Number(parts[2]);
+
+            let changed = false;
+
+            // Remove P0 insert
+            if (period === 0 && inserts.p0[day]) {
+              delete inserts.p0[day];
+              changed = true;
+            }
+          
+            // Remove free insert
+            const freeKey = `${day}-${period}`;
+            if (inserts.free[freeKey]) {
+              delete inserts.free[freeKey];
+              changed = true;
+            }
+          
+            if (changed) {
+              localStorage.setItem('inserts', JSON.stringify(inserts));
+              location.reload();
+            }
+          }
+          else if (parts[0] === '/setbg') {
+
+            // /setbg fluid
+            if (parts[1] === 'fluid') {
+              bgSettings = { mode: 'fluid', color: null, image: null };
+            }
+          
+            // /setbg colour #rrggbb
+            else if (parts[1] === 'colour' && parts[2]) {
+              const hex = parts[2].toLowerCase();
+              if (/^#([0-9a-f]{6})$/.test(hex)) {
+                bgSettings = { mode: 'color', color: hex, image: null };
+              }
+            }
+          
+            // /setbg img filename.png
+            else if (parts[1] === 'img' && parts[2]) {
+              bgSettings = { mode: 'image', color: null, image: parts[2] };
+            }
+          
+            localStorage.setItem('bgSettings', JSON.stringify(bgSettings));
+            applyBackground();
+          }
+          else if (parts[0] === '/setfont' && parts.length >= 2) {
+            let chosenFont = parts.slice(1).join(' ').trim(); // combine all words
+          
+            if (chosenFont.toLowerCase() === 'default') {
+              chosenFont = 'monospace';
+            }
+          
+            // Wrap in quotes if it has spaces
+            if (chosenFont.includes(' ')) {
+              chosenFont = `"${chosenFont}"`;
+            }
+          
+            // Apply font
+            document.documentElement.style.setProperty('--font', chosenFont);
+          
+            // Save to localStorage
+            localStorage.setItem('userFont', chosenFont);
+          
+            // Optional: check if it actually applied
+            const testDiv = document.createElement('div');
+            testDiv.style.fontFamily = chosenFont;
+            if (testDiv.style.fontFamily !== chosenFont) {
+              // Font not available → fallback
+              document.documentElement.style.setProperty('--font', 'monospace');
+              localStorage.setItem('userFont', 'monospace');
+              alert(`Font "${parts.slice(1).join(' ')}" not found, using default.`);
+            }
+          }
+          else if (parts[0] === '/setclock' && parts.length >= 2) {
+            const mode = parts[1].trim();
+            if (mode === '12' || mode === '24') {
+              localStorage.setItem('clockMode', mode);
+              updateClock(); // immediately update the display
+            } else {
+              alert('Invalid clock format. Use /setclock 12 or /setclock 24.');
+            }
+          }
+          commandMode = false;
+          typedValue = '';
+          searchText.classList.remove('command');
+          searchText.textContent = getGreeting();
+        }
+        e.preventDefault();
+        return;
+      }
+    
+      // Normal typing -> Google search
+      if (e.key.length === 1) {
+        typedValue += e.key;
+        searchText.textContent = typedValue;
+      } else if (e.key === 'Backspace') {
+        typedValue = typedValue.slice(0, -1);
+        searchText.textContent = typedValue || getGreeting();
+      } else if (e.key === 'Enter') {
+        if (typedValue.trim()) {
+          window.open(`https://www.google.com/search?q=${encodeURIComponent(typedValue)}`, '_blank');
+          localStorage.setItem('goodToGoSeenDate', todayKey());
+          typedValue = '';
+          searchText.textContent = getGreeting();
+        }
+      }
+    });

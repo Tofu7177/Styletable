@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Help Page</title>
+    <link rel="stylesheet" href="style.css" />
+
+</head>
+<body class="helpbody">
+    <p class="text" style="text-align: left; margin-left: 5rem; margin-top: 0.5rem; position: fixed;"><a style="color: white;"href="index.html">← Back to Home</a></p>
+    <h1 class="text" style="font-size: 3rem; margin-top: 10vh;">Help & <a class="commandtext" style="font-size: 3rem;">Command</a> List</h1>
+    <p class="text">
+        Welcome to the help page! Hope you've had a good experience so far.
+        <br> The timetable is a very cool thing, put together 
+        <br> by a very cool teacher. How exactly it works, though,
+        <br> is something you might want to know more about before
+        <br> you tinker with this website's settings.
+        <br>
+        <br> Pretty much, the timetable is made up of <a class="commandtext" style="font-size: 1rem;">BLOCKS</a>. 
+        <br> Each block corresponds to a subject that you have.
+        <br> So how this website works is that you can set which
+        <br> subject corresponds to which block, and the timetable
+        <br> will automatically update to reflect that! Cool, right?
+        <br>
+        <br> There are a few caveats, though, especially regarding 
+        <br> <a class="commandtext" style="font-size: 1rem;">period 0 classes and free periods</a>. The idea is that some
+        <br> subjects have a p0, resulting in some other class of that
+        <br> same subject being sent to the shadow realm. We call this
+        <br> phenomenon "<a class="commandtext" style="font-size: 1rem;">study-free-o-genesis</a>". 
+        <br>
+        <br> Lowkey, I can't really help you individually with that part.
+        <br> Soooooo, I put together some <a class="commandtext" style="font-size: 1rem;">commands</a> you can use to manually
+        <br> insert period 0 classes and free periods where necessary.
+        <br> You can find those commands listed below.
+        <br>
+        <br> Talking of manual things, you are now breathing manually.
+    </p>
+    <br><br>
+    <h2 class="text" style="font-size: 2rem; margin-top: 2vh;">Timetable Index</h2>
+    <p class="text">
+        Below is a list of subject codes and their corresponding <br>subjects for easy reference when customizing your timetable.
+        <br><br>
+        <a class="commandtext" style="font-size: 1rem;">eng</a> - English
+        <br>
+        <a class="commandtext" style="font-size: 1rem;">met</a> - Methods
+        <br>
+        <a class="commandtext" style="font-size: 1rem;">spc</a> - Specialist
+        <br>
+        <a class="commandtext" style="font-size: 1rem;">chm</a> - Chemistry
+        <br>
+        <a class="commandtext" style="font-size: 1rem;">bio</a> - Biology
+        <br>
+        <a class="commandtext" style="font-size: 1rem;">phy</a> - Physics
+        <br>
+        <a class="commandtext" style="font-size: 1rem;">rev</a> - Revolutions
+        <br>
+        <a class="commandtext" style="font-size: 1rem;">acc</a> - Accounting
+        <br>
+        <a class="commandtext" style="font-size: 1rem;">cns</a> - Chinese
+        <br>
+        <a class="commandtext" style="font-size: 1rem;">vet</a> - VET Subject
+        <br> 
+        <a class="commandtext" style="font-size: 1rem;">free</a> - Study Free
+        <br>
+        
+        More to come!
+    </p>
+    <br><br>
+    <h2 class="text" style="font-size: 2rem; margin-top: 2vh;">Command List</h2>
+    <p class="text">
+        Here are the commands you can use to customize <br> your timetable experience.
+        <br>Here are some commands you can use:
+        <br>
+        <br>
+        </p><h3 class="text" style="font-size: 1.5rem; margin-top: 2vh;">General</h3><p class="text">
+        <a class="commandtext">/help</a><br>
+        Display this help page. <br> Dunno how the heck you got here if you're just learning this.
+        <br><br>
+        <a class="commandtext">/setname [New Name]</a><br>
+        Change the greeting name to [New Name]
+        <br> <br>
+        <a class="commandtext">/reset</a><br>
+        Reset all settings to default.<br><br>
+        </p><h3 class="text" style="font-size: 1.5rem; margin-top: 2vh;">Timetable</h3><p class="text">
+        <a class="commandtext">/setblock [Block Number] [Subject Code]</a><br>
+        Set the subject for the specified block number (1-6). 
+        <br> Subject Codes can be found elsewhere on this page.
+        <br><br>
+        <a class="commandtext">/insert p0 [Subject] [Day]</a><br>
+        Insert a period 0 class for the specified subject <br> on the specified day (1-10).
+        <br><br>
+        <a class="commandtext">/insert free [Day] [Period]</a><br>   
+        Insert a free period on the specified day (1-10) and <br> period number (1-6).
+        <br><br>
+        <a class="commandtext">/remove [Day] [Period]</a><br>
+        Remove an inserted timetable change on the specified day (1-10) <br> and period number (1-6).
+        <br><br>
+
+        </p><h3 class="text" style="font-size: 1.5rem; margin-top: 2vh;">Customising</h3><p class="text">
+        <a class="commandtext">/setclock [12/24]</a><br>
+        Set the clock format to 12-hour ("12") or 24-hour ("12") time.
+        <br><br><br>
+        <a class="commandtext">/setbg [Mode] [Modifier]</a><br>
+        Set the background mode to [Mode]. 
+        <br> Modes can be "colour", "fluid", "img", or "parallax". 
+        <br><br> 1. <a class="commandtext" style="font-size: 1rem;">[Mode] = "colour"</a>: Set a solid colour background.
+        <br>[Modifier]: Hex code of the desired colour (e.g., #FF5733).
+        <br><br> 2. <a class="commandtext" style="font-size: 1rem;">[Mode] = "fluid"</a>: Set to the default colour-changing background.
+        <br> No modifier needed.
+        <br><br> 3. <a class="commandtext" style="font-size: 1rem;">[Mode] = "img"</a>: Set a custom image as the background.
+        <br>[Modifier]: Name of the image file (e.g. "mybackground.jpg").
+        <br>To import a image file, place image in assets folder.
+        <br><br> 4. <a class="commandtext" style="font-size: 1rem;">[Mode] = "parallax"</a>: Turns current image into a slight parallax.
+        <br> [Modifier]: "True" or "False".
+        <br><br><br>
+        <a class="commandtext">/setfont [Mode] [Target] [Modifier]</a><br>
+        Sets font options.
+        <br> Modes can be be "family", "colour", or "outline". 
+        <br><br> 1. <a class="commandtext" style="font-size: 1rem;">[Mode] = "family"</a>: Set the font family.
+        <br>[Target]: not required.
+        <br>[Modifier]: Name of the desired font family (e.g., "Arial").
+        <br> Check list of available fonts for CSS before use.
+        <br><br> 2. <a class="commandtext" style="font-size: 1rem;">[Mode] = "colour"</a>: Set the font colour.
+        <br>[Target]: "date", "clock", "search", or "all".
+        <br>[Modifier]: Hex code of the desired colour (e.g., #FF5733).
+        <br><br> 3. <a class="commandtext" style="font-size: 1rem;">[Mode] = "outline"</a>: Set the font outline.
+        <br>[Target]: "date", "clock", "search", or "all".
+        <br>[Modifier]: Hex code of the desired outline colour (e.g., #FF5733).
+        <br><br><br>
+        <a class="commandtext">/setcell [Mode] [Subject] [Colour]</a><br>
+        Sets the background colour of a specific subject's timetable cell.
+        <br> Mode can be "colour".
+        <br> [Subject]: The subject code (e.g., "met"), or "all" to target all subjects.
+        <br> [Colour]: Hex code of the desired colour (e.g., #FF5733).
+        <br><br>
+    </p>
+
+    <h3 class="text" style="font-size: 1.5rem; margin-top: 2vh;">Styles Sets</h3>
+    <p class="text">You can save entire sets of styles,
+        <br> and load them later with these commands! <br><br>
+        <a class="commandtext">/style save [name]</a><br>
+        Saves the current style set as a user-defined [name].
+        <br><br>
+        <a class="commandtext">/style load [name]</a><br>
+        Loads the style set saved as [name].
+        <br><br>
+        <a class="commandtext">/style remove [name]</a><br>
+        Removes the saved style set with the specified [name].
+        <br><br>
+        <a class="commandtext">/style reset</a><br>
+        Resets all styles to default.
+        <br><br>
+    </p>
+    <p class="text">Your saved style sets will pop up here:</p>
+    <p class="text" id="saved-styles-list">Loading...</p>
+    <br><br>
+    <h3 class="text" style="font-size: 1.5rem; margin-top: 2vh;">Hypershortcuts</h3>
+    <p class="text">You can set your favourite websites as Hypershortcuts!
+        <br> Open sites quickly with a custom <a class="commandtext" style="font-size: 1rem;">//</a> command.
+        <br><br>
+        <a class="commandtext">//[name] [URL link]</a><br>
+        Saves a hypershortcut with the specified [name] and [URL link].
+        <br><br>
+        <a class="commandtext">//[name] remove</a><br>
+        Removes the hypershortcut with the specified [name].
+        <br><br>
+        <a class="commandtext">//[name]</a><br>
+        Opens the hypershortcut with the specified [name].
+        <br><br>
+    </p>
+    <p class="text">Your saved style sets will pop up here:</p>
+    <p class="text" id="saved-shortcuts-list">
+        <!-- Populated dynamically -->
+    </p>
+
+
+    <script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const listEl = document.getElementById('saved-styles-list');
+        const savedStyles = JSON.parse(localStorage.getItem('savedStyles') || '{}');
+
+        if (!Object.keys(savedStyles).length) {
+            listEl.textContent = 'No saved styles yet.';
+            return;
+        }
+
+        // Create HTML elements for saved styles
+        listEl.innerHTML = Object.keys(savedStyles)
+            .map(name => `<span class="commandtext">${name}</span><br>`)
+            .join('');
+
+
+        const listEl2 = document.getElementById('saved-shortcuts-list');
+        const shortcuts = JSON.parse(localStorage.getItem('hypershortcuts') || '{}');
+        if (!Object.keys(shortcuts).length) {
+            listEl2.textContent = 'No hypershortcuts set yet.';
+            return;
+        }
+    
+        listEl2.innerHTML = Object.entries(shortcuts)
+            .map(([name, link]) => `<span class="commandtext">//${name}</span> → <a href="${link}" target="_blank" style="color:white;">${link}</a><br>`)
+            .join('');
+
+
+        // Now select them AFTER they exist in DOM
+        const commandTexts = document.querySelectorAll('.commandtext');
+        let gradientPosition = 0;
+
+        function animateGradient() {
+            gradientPosition = (gradientPosition + 1) % 400;
+            commandTexts.forEach(el => {
+                el.style.backgroundPosition = `${gradientPosition}% 0%`;
+            });
+            requestAnimationFrame(animateGradient);
+        }
+
+        animateGradient();
+    });
+    </script> 
+
+</body>

@@ -1,0 +1,248 @@
+* {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+
+
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    font-family: var(--font);
+    background: #9f95ff; /* url('bg.png') center / contain no-repeat fixed; */
+    color: white;
+    background-image: url('assets/bg.png');
+    background-size: 150%; /* cover the viewport */
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-blend-mode: overlay; /* lets the color blend with the image */
+    image-rendering: pixelated;
+    background-attachment: fixed;
+    transition: background-position 0.1s linear;
+}
+
+.helpbody {
+    margin: 0;
+    font-family: monospace;
+    background: #2b2a30; /* url('bg.png') center / contain no-repeat fixed; */
+    color: white;
+    background-image: url('assets/bg.png');
+    background-size: cover; /* cover the viewport */
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-blend-mode: overlay; /* lets the color blend with the image */
+    image-rendering: pixelated;
+    background-attachment: fixed;
+}
+
+:root {
+--period-width: 4vw;
+--period-height: calc(var(--period-width) * 10 / 24);
+--gap: 0.4vw;
+--font: monospace;
+--search-text-color: #ffffff;
+--search-text-outline: none;
+--clock-text-color: #ffffff;
+--clock-text-outline: none;
+--date-text-color: #ffffff;
+--date-text-outline: none;
+--cell-colour: #ffffff;
+}
+
+
+header {
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+padding: 1rem 2rem;
+font-size: 2.5rem;
+}
+
+
+#clock {
+font-size: 5rem;
+font-weight: bold;
+margin-top: 0vh;
+color: var(--clock-text-color);
+-webkit-text-stroke: 0.05rem var(--clock-text-outline);
+}
+
+#date {
+font-size: 1.5rem;
+margin-bottom: 0rem;
+margin-top:10vh;
+color: var(--date-text-color);
+-webkit-text-stroke: 0.05rem var(--date-text-outline);
+}
+
+
+#timetable {
+  display: grid;
+  grid-template-columns: repeat(10, var(--period-width));
+  grid-template-rows: repeat(7, var(--period-height));
+  grid-auto-flow: column;
+  gap: var(--gap);
+  padding: 2rem;
+  justify-content: center;
+  margin-top: 10vh;
+  position: relative;
+
+}
+
+
+#timetable:hover .other-day {
+  opacity: 0.5;
+}
+
+.cell {
+    width: var(--period-width);
+    height: var(--period-height);
+    image-rendering: pixelated;
+    transition: opacity 0.3s ease;
+}
+
+.cell.icon {
+    background-color: var(--cell-colour);
+    background-image: 
+        linear-gradient(var(--cell-colour), var(--cell-colour)),
+        var(--cell-icon);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+    -webkit-mask-image: var(--cell-icon);
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+
+    mask-image: var(--cell-icon);
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+}
+
+.cell.none {
+    background-color: transparent;
+    mask-image: none;
+    -webkit-mask-image: none;
+}
+
+.current-day {
+  opacity: 1;
+}
+
+.cell:nth-child(-n+35) {
+transform: translateX(-1.25rem);
+}
+
+.cell:nth-child(n+36) {
+transform: translateX(1.25rem);
+}
+
+.cell:nth-child(7n+4):nth-child(-n+35),
+.cell:nth-child(7n+5):nth-child(-n+35) {
+transform: translateX(-1.25rem) translateY(0.8rem);
+}
+
+.cell:nth-child(7n+6):nth-child(-n+35),
+.cell:nth-child(7n+0):nth-child(-n+35) {
+transform: translateX(-1.25rem) translateY(1.6rem);
+}
+
+.cell:nth-child(7n+4):nth-child(n+36),
+.cell:nth-child(7n+5):nth-child(n+36) {
+transform: translateX(1.25rem) translateY(0.8rem);
+}
+
+.cell:nth-child(7n+6):nth-child(n+36),
+.cell:nth-child(7n+0):nth-child(n+36) {
+transform: translateX(1.25rem) translateY(1.6rem);
+}
+
+
+.active {
+opacity: 1;
+}
+
+#search-text {
+  font-family: var(--font);
+  font-size: 1.5rem;
+  text-align: center;
+  margin-top: 2rem;
+  margin-left: 10%;
+  background: transparent;
+  border: none;
+  outline: none;
+
+  color: var(--search-text-color);
+  -webkit-text-stroke: 0.5px var(--search-text-outline);
+  width: 80%;
+
+  cursor: text;
+  user-select: text;
+
+  min-height: 2.5rem;
+}
+
+#search-text::-webkit-search-decoration,
+#search-text::-webkit-search-cancel-button,
+#search-text::-webkit-search-results-button,
+#search-text::-webkit-search-results-decoration {
+  display: none;
+}
+
+#search-text.command {
+  background: linear-gradient(90deg,
+    #ff9999, #ffcc99, #ffff99,
+    #99ff99, #99ffff, #9999ff, #ff99ff
+  );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  background-size: 400% 100%;
+  -webkit-text-stroke: 0.05rem rgba(158, 106, 255, 0.301);
+}
+
+.text {
+    font-family: monospace;
+    font-size: 1rem;
+    text-align: center;
+    margin-top: 2rem;
+    cursor: default;
+    user-select: none;
+    min-height: 2.5rem;
+}
+
+.commandtext {
+  display: inline-block; /* <--- THIS IS CRUCIAL */
+  text-align: center;
+  font-weight: bold; /* makes the gradient more visible */
+  font-size: 1.2rem;
+  
+  background: linear-gradient(
+    90deg,
+    #ff9999,
+    #ffcc99,
+    #ffff99,
+    #99ff99,
+    #99ffff,
+    #9999ff,
+    #ff99ff
+  );
+  background-size: 400% 100%; /* smooth animation */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  /* for Firefox */
+  background-clip: text;
+  color: transparent;
+}
+
+@media (max-width: 800px) {
+:root {
+--period-width: 14vw;
+}
+}
