@@ -1,3 +1,5 @@
-# Ignore the specific folder
-**/user_assets
-!user_assets/.gitkeep
+# Ignore everything INSIDE the folder
+Timetable Website/user_assets/*
+
+# Do NOT ignore the placeholder file
+!Timetable Website/user_assets/.gitkeep
