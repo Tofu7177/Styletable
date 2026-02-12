@@ -1,2 +1,3 @@
 # Ignore the specific folder
-**/user_assets/
+**/user_assets
+!user_assets/.gitkeep
