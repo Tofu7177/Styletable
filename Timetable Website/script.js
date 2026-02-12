@@ -245,7 +245,7 @@ document.onkeydown = function(e) {
     
       // Image layer (used in ALL modes if present)
       if (bgSettings.image) {
-        body.style.backgroundImage = `url('assets/${bgSettings.image}')`;
+        body.style.backgroundImage = `url('user_assets/${bgSettings.image}')`;
       }
     
       // Colour overlay
