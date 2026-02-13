@@ -88,12 +88,14 @@ color: var(--date-text-color);
   justify-content: center;
   margin-top: 10vh;
   position: relative;
-
+  width: 50vw;
+  margin-left: 23vw;
+  
 }
 
 
 #timetable:hover .other-day {
-  opacity: 0.5;
+  opacity: 0.3;
 }
 
 .cell {
@@ -101,7 +103,13 @@ color: var(--date-text-color);
     height: var(--period-height);
     image-rendering: pixelated;
     transition: opacity 0.3s ease;
+    opacity: 1;
 }
+
+.cell:hover {
+    opacity: 1;
+}
+
 
 .cell.icon {
     background-color: var(--cell-colour);

@@ -242,7 +242,8 @@ document.onkeydown = function(e) {
         body.style.backgroundPosition = 'center';
       }
       body.style.backgroundBlendMode = 'normal';
-    
+      
+
       // Image layer (used in ALL modes if present)
       if (bgSettings.image) {
         body.style.backgroundImage = `url('user_assets/${bgSettings.image}')`;
@@ -251,11 +252,13 @@ document.onkeydown = function(e) {
       // Colour overlay
       if (bgSettings.mode === 'color' && bgSettings.color) {
         body.style.backgroundColor = bgSettings.color;
+        body.style.backgroundImage = 'assets/bg.png';
         body.style.backgroundBlendMode = 'overlay';
       }
     
       // Fluid overlay (handled by updateClock)
       if (bgSettings.mode === 'fluid') {
+        body.style.backgroundImage = `url('assets/bg.png')`;
         body.style.backgroundBlendMode = 'overlay';
       }
     }
@@ -575,7 +578,7 @@ try {
       // 4. After help tip → good-to-go (once per day OR until search)
       const goodToGoSeen = localStorage.getItem('goodToGoSeenDate');
       if (goodToGoSeen !== todayKey()) {
-        return "You're good to go! Just start typing to browse the web, or try '/help' for p0s and frees.";
+        return "Just start typing to browse the web!";
       }
       // 5. Default time-based greetings
       const now = new Date();
