@@ -284,7 +284,7 @@ document.onkeydown = function(e) {
       ['none', 4, 'double', 1, 'bib', 5, 3],
     
       // Day 3
-      [4, 2, 'double', 3, 3, 'free', 'free'],
+      [4, 2, 'double', 3, 'double', 'free', 'free'],
     
       // Day 4
       ['none', 5, 'double', 3, 'chp', 6, 'double'],
