@@ -25,13 +25,13 @@ body {
 .helpbody {
     margin: 0;
     font-family: monospace;
-    background: #2b2a30; /* url('bg.png') center / contain no-repeat fixed; */
+    background: #272242; /* url('bg.png') center / contain no-repeat fixed; */
     color: white;
     background-image: url('assets/bg.png');
     background-size: cover; /* cover the viewport */
     background-repeat: no-repeat;
     background-position: center center;
-    background-blend-mode: overlay; /* lets the color blend with the image */
+    background-blend-mode: add; /* lets the color blend with the image */
     image-rendering: pixelated;
     background-attachment: fixed;
 }
