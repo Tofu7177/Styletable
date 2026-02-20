@@ -8,7 +8,7 @@
 
 </head>
 <body class="helpbody">
-    <p class="text" style="text-align: left; margin-left: 5rem; margin-top: 0.5rem; position: fixed;"><a style="color: white;"href="index.html">← Back to Home</a></p>
+    <p class="text" style="text-align: left; margin-left: 5rem; margin-top: 0.5rem; position: fixed; z-index:10000;"><a style="color: white;" href="index.html">← Back to Home</a></p>
     <h1 class="text" style="font-size: 3rem; margin-top: 10vh;">Help & <a class="commandtext" style="font-size: 3rem;">Command</a> List</h1>
     <p class="text">
         Welcome to the help page! Hope you've had a good experience so far.
@@ -37,67 +37,89 @@
         <br> Talking of manual things, you are now breathing manually.
     </p>
     <br><br>
-    <h2 class="text" style="font-size: 2rem; margin-top: 2vh;">Timetable Index</h2>
-    <p class="text">
-        Below is a list of subject codes and their corresponding <br>subjects for easy reference when customizing your timetable.
-        <br><br>
-        <a class="commandtext" style="font-size: 1rem;">eng</a> - English
-        <br>
-        <a class="commandtext" style="font-size: 1rem;">met</a> - Methods
-        <br>
-        <a class="commandtext" style="font-size: 1rem;">spc</a> - Specialist
-        <br>
-        <a class="commandtext" style="font-size: 1rem;">chm</a> - Chemistry
-        <br>
-        <a class="commandtext" style="font-size: 1rem;">bio</a> - Biology
-        <br>
-        <a class="commandtext" style="font-size: 1rem;">phy</a> - Physics
-        <br>
-        <a class="commandtext" style="font-size: 1rem;">rev</a> - Revolutions
-        <br>
-        <a class="commandtext" style="font-size: 1rem;">acc</a> - Accounting
-        <br>
-        <a class="commandtext" style="font-size: 1rem;">cns</a> - Chinese
-        <br>
-        <a class="commandtext" style="font-size: 1rem;">vet</a> - VET Subject
-        <br> 
-        <a class="commandtext" style="font-size: 1rem;">free</a> - Study Free
-        <br>
-        
-        More to come!
-    </p>
-    <br><br>
-    <h2 class="text" style="font-size: 2rem; margin-top: 2vh;">Command List</h2>
-    <p class="text">
-        Here are the commands you can use to customize <br> your timetable experience.
-        <br>Here are some commands you can use:
-        <br>
-        <br>
-        </p><h3 class="text" style="font-size: 1.5rem; margin-top: 2vh;">General</h3><p class="text">
-        <a class="commandtext">/help</a><br>
-        Display this help page. <br> Dunno how the heck you got here if you're just learning this.
-        <br><br>
-        <a class="commandtext">/setname [New Name]</a><br>
-        Change the greeting name to [New Name]
-        <br> <br>
-        <a class="commandtext">/reset</a><br>
-        Reset all settings to default.<br><br>
-        </p><h3 class="text" style="font-size: 1.5rem; margin-top: 2vh;">Timetable</h3><p class="text">
-        <a class="commandtext">/setblock [Block Number] [Subject Code]</a><br>
-        Set the subject for the specified block number (1-6). 
-        <br> Subject Codes can be found elsewhere on this page.
-        <br><br>
-        <a class="commandtext">/insert p0 [Subject] [Day]</a><br>
-        Insert a period 0 class for the specified subject <br> on the specified day (1-10).
-        <br><br>
-        <a class="commandtext">/insert free [Day] [Period]</a><br>   
-        Insert a free period on the specified day (1-10) and <br> period number (1-6).
-        <br><br>
-        <a class="commandtext">/remove [Day] [Period]</a><br>
-        Remove an inserted timetable change on the specified day (1-10) <br> and period number (1-6).
-        <br><br>
+    <h2 class="text collapsed" style="font-size: 2rem; margin-top: 2vh;">Timetable Index</h2>
+    <div class="collapsible-content collapsed">
+      <p class="text">
+          Below is a list of subject codes and their corresponding <br>subjects for easy reference when customizing your timetable.
+          <br><br>
+          <a class="commandtext" style="font-size: 1rem;">eng</a> - English
+          <br>
+          <a class="commandtext" style="font-size: 1rem;">met</a> - Methods
+          <br>
+          <a class="commandtext" style="font-size: 1rem;">spc</a> - Specialist
+          <br>
+          <a class="commandtext" style="font-size: 1rem;">chm</a> - Chemistry
+          <br>
+          <a class="commandtext" style="font-size: 1rem;">bio</a> - Biology
+          <br>
+          <a class="commandtext" style="font-size: 1rem;">phy</a> - Physics
+          <br>
+          <a class="commandtext" style="font-size: 1rem;">rev</a> - Revolutions
+          <br>
+          <a class="commandtext" style="font-size: 1rem;">acc</a> - Accounting
+          <br>
+          <a class="commandtext" style="font-size: 1rem;">cns</a> - Chinese
+          <br>
+          <a class="commandtext" style="font-size: 1rem;">vet</a> - VET Subject
+          <br> 
+          <a class="commandtext" style="font-size: 1rem;">free</a> - Study Free
+          <br>
+          
+          More to come!
+      </p>
+    </div>
+    <br>
+    <h2 class="text collapsed" style="font-size: 2rem; margin-top: 2vh;">Timetable Setup</h2>
+    <div class="collapsible-content collapsed">
+      <p class="text">
+          Here are the commands you can use to customize <br> your timetable experience.
+          <br>Here are some commands you can use:
+          <br>
+          <br>
+      </p>
 
-        </p><h3 class="text" style="font-size: 1.5rem; margin-top: 2vh;">Customising</h3><p class="text">
+      <h3 class="text collapsed" style="font-size: 1.5rem; margin-top: 2vh;">General</h3>
+      <div class="collapsible-content-sub collapsed">
+        <p class="text">
+          <a class="commandtext">/help</a><br>
+          Display this help page. <br> Dunno how the heck you got here if you're just learning this.
+          <br><br>
+          <a class="commandtext">/setname [New Name]</a><br>
+          Change the greeting name to [New Name]
+          <br> <br>
+          <a class="commandtext">/reset</a><br>
+          Reset all settings to default.<br><br>
+        </p>
+      </div>
+
+      <h3 class="text collapsed" style="font-size: 1.5rem; margin-top: 2vh;">Timetable</h3>
+      <div class="collapsible-content-sub collapsed">
+        <p class="text">
+          <a class="commandtext">/setblock [Block Number] [Subject Code]</a><br>
+          Set the subject for the specified block number (1-6). 
+          <br> Subject Codes can be found elsewhere on this page.
+          <br><br>
+          <a class="commandtext">/insert p0 [Subject] [Day]</a><br>
+          Insert a period 0 class for the specified subject <br> on the specified day (1-10).
+          <br><br>
+          <a class="commandtext">/insert free [Day] [Period]</a><br>   
+          Insert a free period on the specified day (1-10) and <br> period number (1-6).
+          <br><br>
+          <a class="commandtext">/remove [Day] [Period]</a><br>
+          Remove an inserted timetable change on the specified day (1-10) <br> and period number (1-6).
+          <br><br>
+        </p>
+      </div>
+
+
+    </div>
+    </div>
+    <br>
+    <h2 class="text collapsed" style="font-size: 2rem; margin-top: 2vh;">Style</h2>
+    <div class="collapsible-content collapsed">
+      <h3 class="text collapsed" style="font-size: 1.5rem; margin-top: 2vh;">Customising</h3>
+      <div class="collapsible-content-sub collapsed">
+        <p class="text">
         <a class="commandtext">/setclock [12/24]</a><br>
         Set the clock format to 12-hour ("12") or 24-hour ("12") time.
         <br><br><br>
@@ -128,54 +150,113 @@
         <br>[Target]: "date", "clock", "search", or "all".
         <br>[Modifier]: Hex code of the desired outline colour (e.g., #FF5733).
         <br><br><br>
-        <a class="commandtext">/setcell [Mode] [Subject] [Colour]</a><br>
-        Sets the background colour of a specific subject's timetable cell.
-        <br> Mode can be "colour".
-        <br> [Subject]: The subject code (e.g., "met"), or "all" to target all subjects.
-        <br> [Colour]: Hex code of the desired colour (e.g., #FF5733).
+
+        <a class="commandtext">/cellcolour [Mode] [Arg1] [Arg2] [Colour]</a><br>
+        Sets colours of cells.
+        <br> Modes can be "all", "week", "day", "period", or "cell".
+        <br><br> 1. <a class="commandtext" style="font-size: 1rem;">[Mode] = "all"</a>: Affects all cells.
+        <br>[Arg1]: not required.
+        <br>[Colour]: Hex code of desired cell colour (e.g., #FF5733).
+        <br><br> 2. <a class="commandtext" style="font-size: 1rem;">[Mode] = "week"</a>: Affects a week's cells.
+        <br>[Arg1]: "A" or "B".
+        <br>[Colour]: Hex code of desired cell colour (e.g., #FF5733).
+        <br><br> 3. <a class="commandtext" style="font-size: 1rem;">[Mode] = "day"</a>: Affects a day's cells.
+        <br>[Arg1]: Day number (int 1-10).
+        <br>[Colour]: Hex code of desired cell colour (e.g., #FF5733).
+        <br><br> 4. <a class="commandtext" style="font-size: 1rem;">[Mode] = "period"</a>: Affects a period's cells.
+        <br>[Arg1]: Period number (int 0-6).
+        <br>[Colour]: Hex code of desired cell colour (e.g., #FF5733).
+        <br><br> 5. <a class="commandtext" style="font-size: 1rem;">[Mode] = "cell"</a>: Affects a specific cell.
+        <br>[Arg1]: Day number (int 1-10).
+        <br>[Arg2]: Period number (int 0-6).
+        <br>[Colour]: Hex code of desired cell colour (e.g., #FF5733).
         <br><br>
     </p>
 
-    <h3 class="text" style="font-size: 1.5rem; margin-top: 2vh;">Styles Sets</h3>
-    <p class="text">You can save entire sets of styles,
-        <br> and load them later with these commands! <br><br>
-        <a class="commandtext">/style save [name]</a><br>
-        Saves the current style set as a user-defined [name].
-        <br><br>
-        <a class="commandtext">/style load [name]</a><br>
-        Loads the style set saved as [name].
-        <br><br>
-        <a class="commandtext">/style remove [name]</a><br>
-        Removes the saved style set with the specified [name].
-        <br><br>
-        <a class="commandtext">/style reset</a><br>
-        Resets all styles to default.
-        <br><br>
-    </p>
-    <p class="text">Your saved style sets will pop up here:</p>
-    <p class="text" id="saved-styles-list">Loading...</p>
-    <br><br>
-    <h3 class="text" style="font-size: 1.5rem; margin-top: 2vh;">Hypershortcuts</h3>
-    <p class="text">You can set your favourite websites as Hypershortcuts!
-        <br> Open sites quickly with a custom <a class="commandtext" style="font-size: 1rem;">//</a> command.
-        <br><br>
-        <a class="commandtext">//[name] [URL link]</a><br>
-        Saves a hypershortcut with the specified [name] and [URL link].
-        <br><br>
-        <a class="commandtext">//[name] remove</a><br>
-        Removes the hypershortcut with the specified [name].
-        <br><br>
-        <a class="commandtext">//[name]</a><br>
-        Opens the hypershortcut with the specified [name].
-        <br><br>
-    </p>
-    <p class="text">Your saved style sets will pop up here:</p>
-    <p class="text" id="saved-shortcuts-list">
-        <!-- Populated dynamically -->
-    </p>
+    </div>
 
+    <h3 class="text collapsed" style="font-size: 1.5rem; margin-top: 2vh;">Style Sets</h3>
+    <div class="collapsible-content-sub collapsed">
+
+        <p class="text">You can save entire sets of styles,
+            <br> and load them later with these commands! <br><br>
+            <a class="commandtext">/style save [name]</a><br>
+            Saves the current style set as a user-defined [name].
+            <br><br>
+            <a class="commandtext">/style load [name]</a><br>
+            Loads the style set saved as [name].
+            <br><br>
+            <a class="commandtext">/style remove [name]</a><br>
+            Removes the saved style set with the specified [name].
+            <br><br>
+            <a class="commandtext">/style reset</a><br>
+            Resets all styles to default.
+            <br><br>
+        </p>
+
+
+      <p class="text">Your saved style sets will pop up here:</p>
+      <p class="text" id="saved-styles-list">Loading...</p>
+      <br><br>
+    </div>
+    </div>
+    <br>
+    <h2 class="text collapsed" style="font-size: 2rem; margin-top: 2vh;">Search tools</h2>
+    <div class="collapsible-content collapsed">
+        <h3 class="text collapsed" style="font-size: 1.5rem; margin-top: 2vh;">Hypershortcuts</h3>
+        <div class="collapsible-content-sub collapsed">
+          <p class="text">You can set your favourite websites as Hypershortcuts!
+              <br> Open sites quickly with a custom <a class="commandtext" style="font-size: 1rem;">//</a> command.
+              <br><br>
+              <a class="commandtext">//[name] [URL link]</a><br>
+              Saves a hypershortcut with the specified [name] and [URL link].
+              <br><br>
+              <a class="commandtext">//[name] remove</a><br>
+              Removes the hypershortcut with the specified [name].
+              <br><br>
+              <a class="commandtext">//[name]</a><br>
+              Opens the hypershortcut with the specified [name].
+              <br><br>
+          </p>
+
+
+        <p class="text">Your hypershortcuts sets will pop up here:</p>
+        <p class="text" id="saved-shortcuts-list">
+            <!-- Populated dynamically -->
+        </p>
+        </div>
+    </div>
+      </p>
 
     <script>
+    // Collapsible headers for help page
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set up h2 collapse toggle
+      document.querySelectorAll('.helpbody h2.text').forEach(h2 => {
+        const content = h2.nextElementSibling;
+        if (content && content.classList.contains('collapsible-content')) {
+          h2.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A' || e.target.closest('a')) return; // Don't toggle on link clicks
+            h2.classList.toggle('collapsed');
+            content.classList.toggle('collapsed');
+          });
+        }
+      });
+
+      // Set up h3 collapse toggle (within h2 content)
+      document.querySelectorAll('.helpbody h3.text').forEach(h3 => {
+        const content = h3.nextElementSibling;
+        if (content && content.classList.contains('collapsible-content-sub')) {
+          h3.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A' || e.target.closest('a')) return;
+            h3.classList.toggle('collapsed');
+            content.classList.toggle('collapsed');
+          });
+        }
+      });
+    });
+
+    // Populate saved styles and shortcuts (existing code)
     window.addEventListener('DOMContentLoaded', () => {
         const listEl = document.getElementById('saved-styles-list');
         const savedStyles = JSON.parse(localStorage.getItem('savedStyles') || '{}');
@@ -218,5 +299,40 @@
         animateGradient();
     });
     </script> 
+
+    <script>
+    // Parallax support for help page (reads bgSettings from localStorage)
+    (function() {
+      try {
+        const raw = localStorage.getItem('bgSettings');
+        const bgSettings = raw ? JSON.parse(raw) : null;
+        const PARALLAX_STRENGTH = 20;
+
+        function initParallax() {
+          if (!bgSettings || !bgSettings.parallax) return;
+
+          // Make background slightly larger for parallax movement
+          document.body.style.backgroundSize = '110%';
+          document.body.style.backgroundPosition = 'center';
+
+          document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth - 0.5;
+            const y = e.clientY / window.innerHeight - 0.5;
+
+            const offsetX = -x * PARALLAX_STRENGTH;
+            const offsetY = -y * PARALLAX_STRENGTH;
+
+            document.body.style.backgroundPosition =
+              `calc(50% + ${offsetX}px) calc(50% + ${offsetY}px)`;
+          });
+        }
+
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initParallax);
+        else initParallax();
+      } catch (e) {
+        // swallow errors — non-critical
+      }
+    })();
+    </script>
 
 </body>

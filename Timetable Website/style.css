@@ -26,14 +26,104 @@ body {
     margin: 0;
     font-family: monospace;
     background: #272242; /* url('bg.png') center / contain no-repeat fixed; */
-    color: white;
-    background-image: url('assets/bg.png');
-    background-size: cover; /* cover the viewport */
+    color: white; 
+    background-image: url('assets/helpbg.png');
+    background-size: 110%; /* cover the viewport */
     background-repeat: no-repeat;
     background-position: center center;
     background-blend-mode: add; /* lets the color blend with the image */
     image-rendering: pixelated;
     background-attachment: fixed;
+}
+
+/* Sticky section headers for help page */
+.helpbody {
+  --help-h2-height: 3.2rem;
+  --help-h3-height: 2.2rem;
+}
+
+.helpbody h2.text {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  margin: 0; 
+  padding: 0 1rem;
+  height: var(--help-h2-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(49 43 84);
+  border-bottom: 1px solid rgb(49 43 84)
+}
+
+/* Stackable subheaders */
+.helpbody h3.text {
+  position: sticky;
+  top: var(--help-h2-height);
+  z-index: 9;
+  margin: 0;
+  padding: 0 1rem;
+  height: var(--help-h3-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #272242;
+  cursor: pointer;
+}
+
+.helpbody h2.text, .helpbody h3.text {
+  cursor: pointer;
+  user-select: text;
+}
+
+.helpbody h2.text::before {
+  content: '▼ ';
+  display: inline-block;
+  margin-right: 0.5rem;
+  transition: transform 0.2s ease;
+  font-size: 0.8rem;
+}
+
+.helpbody h2.text.collapsed::before {
+  transform: rotate(-90deg);
+}
+
+.helpbody h3.text::before {
+  content: '▼ ';
+  display: inline-block;
+  margin-right: 0.5rem;
+  transition: transform 0.2s ease;
+  font-size: 0.7rem;
+}
+
+.helpbody h3.text.collapsed::before {
+  transform: rotate(-90deg);
+}
+
+.helpbody .collapsible-content {
+  max-height: 9999px;
+  overflow: visible;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  opacity: 1;
+}
+
+.helpbody .collapsible-content.collapsed {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.helpbody .collapsible-content-sub {
+  max-height: 9999px;
+  overflow: visible;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  opacity: 1;
+}
+
+.helpbody .collapsible-content-sub.collapsed {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
 }
 
 :root {

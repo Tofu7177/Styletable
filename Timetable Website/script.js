@@ -20,7 +20,9 @@ function getCurrentStyle() {
     bgSettings: JSON.parse(localStorage.getItem('bgSettings') || '{}'),
     clockMode: localStorage.getItem('clockMode') || '12',
     cellColour: localStorage.getItem('cellColour') || '#ffffff',
-    cellColours: JSON.parse(localStorage.getItem('cellColours') || '{}')
+    cellColourTs: Number(localStorage.getItem('cellColourTs') || 0),
+    cellColours: JSON.parse(localStorage.getItem('cellColours') || '{}'),
+    cellOverrides: JSON.parse(localStorage.getItem('cellOverrides') || '{}')
   };
 }
 
@@ -50,17 +52,26 @@ function applyStyle(styleObj) {
   // Per-subject colours
   const cellColoursToStore = styleObj.cellColours || {};
   localStorage.setItem('cellColours', JSON.stringify(cellColoursToStore));
-  // Update in-memory mapping and update existing cells
-  try { cellColours = JSON.parse(localStorage.getItem('cellColours') || '{}'); } catch (e) { cellColours = {}; }
-  document.querySelectorAll('.cell.icon').forEach(el => {
+  // Persist & normalize per-subject colours into memory
+  try { cellColours = normalizeCellColours(JSON.parse(localStorage.getItem('cellColours') || '{}')); } catch (e) { cellColours = {}; }
+
+  // Cell overrides
+  const overridesToStore = styleObj.cellOverrides || { perCell: {}, perDay: {}, perPeriod: {}, perWeek: {} };
+  localStorage.setItem('cellOverrides', JSON.stringify(overridesToStore));
+  try { cellOverrides = normalizeCellOverrides(JSON.parse(localStorage.getItem('cellOverrides') || '{}')); } catch (e) { cellOverrides = { perCell: {}, perDay: {}, perPeriod: {}, perWeek: {} }; }
+
+  // Global default timestamp
+  const tsToStore = styleObj.cellColourTs || Date.now();
+  localStorage.setItem('cellColourTs', tsToStore);
+  document.querySelectorAll('.cell').forEach(el => {
     const iconUrl = el.style.getPropertyValue('--cell-icon') || '';
-    const match = iconUrl.match(/([^/\\]+)\.png\)/);
-    if (match) {
-      const filename = match[1];
-      const subj = Object.keys(iconMap).find(k => iconMap[k] && iconMap[k].includes(filename));
-      const c = (subj && cellColours[subj]) || localStorage.getItem('cellColour') || '#ffffff';
-      el.style.setProperty('--cell-colour', c);
-    }
+    const match = iconUrl.match(/([^/\\]+)\.png/);
+    const filename = match ? match[1] : null;
+    const subj = filename ? Object.keys(iconMap).find(k => iconMap[k] && iconMap[k].includes(filename)) : null;
+    const dIndex = Number(el.dataset.day || -1);
+    const pIndex = Number(el.dataset.period || -1);
+    const c = getCellColourFor(dIndex, pIndex, subj);
+    el.style.setProperty('--cell-colour', c);
   });
 }
 
@@ -355,6 +366,94 @@ try {
   if (stored) cellColours = JSON.parse(stored);
 } catch {}
 
+// Normalize helper: ensure colours are stored as { color: '#rrggbb', t: timestamp }
+function normalizeCellColours(raw) {
+  const out = {};
+  try {
+    Object.keys(raw || {}).forEach(k => {
+      const v = raw[k];
+      if (!v) return;
+      if (typeof v === 'string') out[k] = { color: v, t: 0 };
+      else if (v && v.color) out[k] = { color: v.color, t: v.t || 0 };
+      else out[k] = { color: String(v), t: 0 };
+    });
+  } catch (e) {}
+  return out;
+}
+
+cellColours = normalizeCellColours(cellColours);
+
+// Cell-level overrides (persisted). Structure:
+// { perCell: { "day-period": "#hex" }, perDay: { "day": "#hex" }, perPeriod: { "period": "#hex" }, perWeek: { "A": "#hex", "B": "#hex" } }
+let cellOverrides = { perCell: {}, perDay: {}, perPeriod: {}, perWeek: {} };
+try {
+  const storedOverrides = localStorage.getItem('cellOverrides');
+  if (storedOverrides) cellOverrides = JSON.parse(storedOverrides);
+} catch {}
+
+function normalizeCellOverrides(raw) {
+  const out = { perCell: {}, perDay: {}, perPeriod: {}, perWeek: {} };
+  try {
+    if (!raw) return out;
+    ['perCell','perDay','perPeriod','perWeek'].forEach(scope => {
+      const map = raw[scope] || {};
+      Object.keys(map).forEach(k => {
+        const v = map[k];
+        if (!v) return;
+        if (typeof v === 'string') out[scope][k] = { color: v, t: 0 };
+        else if (v && v.color) out[scope][k] = { color: v.color, t: v.t || 0 };
+        else out[scope][k] = { color: String(v), t: 0 };
+      });
+    });
+  } catch (e) {}
+  return out;
+}
+
+cellOverrides = normalizeCellOverrides(cellOverrides);
+
+// Global default timestamp key
+function readGlobalCellColourTs() {
+  const s = localStorage.getItem('cellColourTs');
+  return s ? Number(s) : 0;
+}
+
+// Helper to determine final colour for a cell
+function getCellColourFor(dIndex, pIndex, subj) {
+  // Evaluate all possible colour sources and pick the most-recently-applied one.
+  const candidates = [];
+
+  const cellKey = `${dIndex + 1}-${pIndex}`;
+  const cPerCell = cellOverrides.perCell[cellKey];
+  if (cPerCell && cPerCell.color) candidates.push(cPerCell);
+
+  const dayKey = `${dIndex + 1}`;
+  const cPerDay = cellOverrides.perDay[dayKey];
+  if (cPerDay && cPerDay.color) candidates.push(cPerDay);
+
+  const periodKey = `${pIndex}`;
+  const cPerPeriod = cellOverrides.perPeriod[periodKey];
+  if (cPerPeriod && cPerPeriod.color) candidates.push(cPerPeriod);
+
+  const weekKey = (dIndex + 1) <= 5 ? 'A' : 'B';
+  const cPerWeek = cellOverrides.perWeek[weekKey];
+  if (cPerWeek && cPerWeek.color) candidates.push(cPerWeek);
+
+  if (subj && cellColours[subj] && cellColours[subj].color) candidates.push(cellColours[subj]);
+
+  const globalColor = localStorage.getItem('cellColour') || '#ffffff';
+  const globalTs = readGlobalCellColourTs() || 0;
+  candidates.push({ color: globalColor, t: globalTs });
+
+  // Pick candidate with highest timestamp; missing timestamps treated as 0
+  let best = null;
+  candidates.forEach(c => {
+    const t = c.t || 0;
+    if (!best || t > (best.t || 0)) best = c;
+  });
+
+  return (best && best.color) ? best.color : '#ffffff';
+}
+
   let inserts = {
     p0: {},       // day -> subject
     free: {}      // "day-period" -> true
@@ -400,6 +499,7 @@ try {
       day.forEach((period, periodIndex) => {
         const el = document.createElement('div');
         el.dataset.day = dayIndex;
+        el.dataset.period = periodIndex;
       
         if (period !== 'none') {
           let subject = period;
@@ -413,16 +513,13 @@ try {
         
           if (iconMap[subject]) {
             el.classList.add('icon');
-            el.style.setProperty(
-              '--cell-icon',
-              `url(${iconMap[subject]})`
-            );
-            // apply per-subject colour if present, else fallback to global
-            const subjectColour = cellColours[subject] || localStorage.getItem('cellColour') || '#ffffff';
-            el.style.setProperty('--cell-colour', subjectColour);
+            el.style.setProperty('--cell-icon', `url(${iconMap[subject]})`);
           } else {
             el.classList.add('none');
           }
+
+        const c = (typeof period === 'number') ? getCellColourFor(dayIndex, periodIndex, blockSubjects[period]) : getCellColourFor(dayIndex, periodIndex, period);
+        el.style.setProperty('--cell-colour', c);
         } else {
           el.classList.add('none');
         }
@@ -723,7 +820,9 @@ searchText.addEventListener('keydown', async (e) => {
               localStorage.removeItem('fontVars');    // text colors & outlines
               localStorage.removeItem('clockMode');
               localStorage.removeItem('cellColour');
+              localStorage.removeItem('cellColourTs');
               localStorage.removeItem('cellColours');
+              localStorage.removeItem('cellOverrides');
               localStorage.removeItem('savedStyles'); // saved style sets
           
               location.reload();
@@ -899,7 +998,9 @@ searchText.addEventListener('keydown', async (e) => {
               localStorage.removeItem('bgSettings');
               localStorage.removeItem('clockMode');
               localStorage.removeItem('cellColour');
+              localStorage.removeItem('cellColourTs');
               localStorage.removeItem('cellColours');
+              localStorage.removeItem('cellOverrides');
             
               applyStyle(getCurrentStyle());
             }
@@ -932,19 +1033,21 @@ searchText.addEventListener('keydown', async (e) => {
               localStorage.setItem('clockMode', styleToLoad.clockMode || '12');
               localStorage.setItem('cellColour', styleToLoad.cellColour || '#ffffff');
               localStorage.setItem('cellColours', JSON.stringify(styleToLoad.cellColours || {}));
+              localStorage.setItem('cellOverrides', JSON.stringify(styleToLoad.cellOverrides || { perCell: {}, perDay: {}, perPeriod: {}, perWeek: {} }));
+              localStorage.setItem('cellColourTs', styleToLoad.cellColourTs || Date.now());
             
               applyStyle(styleToLoad);
               // Update in-page cells to new colours immediately
-              try { cellColours = JSON.parse(localStorage.getItem('cellColours') || '{}'); } catch (e) { cellColours = {}; }
-              document.querySelectorAll('.cell.icon').forEach(el => {
+              try { cellColours = normalizeCellColours(JSON.parse(localStorage.getItem('cellColours') || '{}')); } catch (e) { cellColours = {}; }
+              // Refresh all cells so overrides and per-subject colours take effect immediately
+              document.querySelectorAll('.cell').forEach(el => {
                 const iconUrl = el.style.getPropertyValue('--cell-icon') || '';
-                const match = iconUrl.match(/([^/\\]+)\.png\)/);
-                if (match) {
-                  const filename = match[1];
-                  const subj = Object.keys(iconMap).find(k => iconMap[k] && iconMap[k].includes(filename));
-                  const c = (subj && cellColours[subj]) || localStorage.getItem('cellColour') || '#ffffff';
-                  el.style.setProperty('--cell-colour', c);
-                }
+                const match = iconUrl.match(/([^/\\]+)\.png/);
+                const filename = match ? match[1] : null;
+                const subj = filename ? Object.keys(iconMap).find(k => iconMap[k] && iconMap[k].includes(filename)) : null;
+                const dIndex = Number(el.dataset.day || -1);
+                const pIndex = Number(el.dataset.period || -1);
+                el.style.setProperty('--cell-colour', getCellColourFor(dIndex, pIndex, subj));
               });
             }
 
@@ -991,46 +1094,148 @@ searchText.addEventListener('keydown', async (e) => {
                   alert(`Shortcut '${shortcutName}' saved → ${link}`);
               }
           }
-          else if (parts[0] === '/setcell' && parts[1] === 'colour' && parts.length >= 4) {
-            // /setcell colour [subject|all] [#rrggbb]
-            const subject = parts[2].toLowerCase();
-            const hex = parts[3].toLowerCase();
+          else if (parts[0] === '/cellcolour' && parts.length >= 2) {
+            const mode = parts[1].toLowerCase();
 
-            if (!/^#([0-9a-f]{6})$/.test(hex)) return;
+            // Helper to validate hex
+            const tryHex = (s) => (s && /^#([0-9a-f]{6})$/.test(s.toLowerCase())) ? s.toLowerCase() : null;
 
-            // Load existing mapping
-            try { cellColours = JSON.parse(localStorage.getItem('cellColours') || '{}'); } catch (e) { cellColours = {}; }
-
-            if (subject === 'all') {
-              // apply to all known subjects (skip 'none')
-              Object.keys(iconMap).forEach(k => {
-                if (k !== 'none') cellColours[k] = hex;
-              });
-              // also set global fallback
-              document.documentElement.style.setProperty('--cell-colour', hex);
+            if (mode === 'all' && parts.length >= 3) {
+              const hex = tryHex(parts[2]);
+              if (!hex) return;
+              // Set global default cell colour only; do not wipe subject-specific colours or overrides.
               localStorage.setItem('cellColour', hex);
-            } else {
-              // validate subject exists in map
-              if (!iconMap.hasOwnProperty(subject)) return;
-              cellColours[subject] = hex;
-              // if subject is special (e.g. set global), leave global alone
+              localStorage.setItem('cellColourTs', Date.now());
+              document.documentElement.style.setProperty('--cell-colour', hex);
+              // Update DOM: refresh each cell's computed colour based on precedence
+              document.querySelectorAll('.cell').forEach(el => {
+                const dIndex = Number(el.dataset.day || -1);
+                const pIndex = Number(el.dataset.period || -1);
+                const iconUrl = el.style.getPropertyValue('--cell-icon') || '';
+                const match = iconUrl.match(/([^/\\]+)\.png/);
+                const filename = match ? match[1] : null;
+                const subj = filename ? Object.keys(iconMap).find(k => iconMap[k] && iconMap[k].includes(filename)) : null;
+                el.style.setProperty('--cell-colour', getCellColourFor(dIndex, pIndex, subj));
+              });
             }
 
-            localStorage.setItem('cellColours', JSON.stringify(cellColours));
-            // reflect immediately
-            // update any existing cells on page
-            document.querySelectorAll('.cell.icon').forEach(el => {
-              const iconUrl = el.style.getPropertyValue('--cell-icon') || '';
-              // try to derive subject from icon URL
-              const match = iconUrl.match(/([^/\\]+)\.png\)/);
-              if (match) {
-                const filename = match[1];
-                // map filename back to subject key where possible
-                const subj = Object.keys(iconMap).find(k => iconMap[k] && iconMap[k].includes(filename));
-                const c = (subj && cellColours[subj]) || localStorage.getItem('cellColour') || '#ffffff';
-                el.style.setProperty('--cell-colour', c);
+            else if (mode === 'subject' && parts.length >= 3) {
+              // Support:
+              //  - /cellcolour subject <subject> <#rrggbb>   -> set one subject
+              //  - /cellcolour subject all <#rrggbb>       -> set all subjects
+              //  - legacy: /cellcolour subject <#rrggbb>    -> set all subjects
+              if (parts.length >= 4 && parts[2].toLowerCase() !== 'all' && !/^#([0-9a-f]{6})$/.test(parts[2].toLowerCase())) {
+                const subject = parts[2].toLowerCase();
+                const hex = tryHex(parts[3]);
+                if (!hex || !iconMap[subject]) return;
+                cellColours[subject] = { color: hex, t: Date.now() };
+              } else {
+                const hex = tryHex(parts[parts.length - 1]);
+                if (!hex) return;
+                Object.keys(iconMap).forEach(k => { if (k !== 'none') cellColours[k] = { color: hex, t: Date.now() }; });
               }
-            });
+              localStorage.setItem('cellColours', JSON.stringify(cellColours));
+              // update existing cells
+              document.querySelectorAll('.cell').forEach(el => {
+                const iconUrl = el.style.getPropertyValue('--cell-icon') || '';
+                const match = iconUrl.match(/([^/\\]+)\.png/);
+                const filename = match ? match[1] : null;
+                const subj = filename ? Object.keys(iconMap).find(k => iconMap[k] && iconMap[k].includes(filename)) : null;
+                const dIndex = Number(el.dataset.day || -1);
+                const pIndex = Number(el.dataset.period || -1);
+                el.style.setProperty('--cell-colour', getCellColourFor(dIndex, pIndex, subj));
+              });
+            }
+
+            else if (mode === 'day' && parts.length >= 4) {
+              const day = Number(parts[2]);
+              const hex = tryHex(parts[3]);
+              if (!hex || isNaN(day) || day < 1 || day > 10) return;
+              cellOverrides.perDay[`${day}`] = { color: hex, t: Date.now() };
+              localStorage.setItem('cellOverrides', JSON.stringify(cellOverrides));
+              document.querySelectorAll('.cell').forEach(el => {
+                const dIndex = Number(el.dataset.day || -1);
+                if (dIndex === day - 1) {
+                  const subjGuess = (() => {
+                    const iconUrl = el.style.getPropertyValue('--cell-icon') || '';
+                    const match = iconUrl.match(/([^/\\]+)\.png/);
+                    if (!match) return null;
+                    const filename = match[1];
+                    return Object.keys(iconMap).find(k => iconMap[k] && iconMap[k].includes(filename));
+                  })();
+                  const pIndex = Number(el.dataset.period || -1);
+                  el.style.setProperty('--cell-colour', getCellColourFor(dIndex, pIndex, subjGuess));
+                }
+              });
+            }
+
+            else if (mode === 'week' && parts.length >= 4) {
+              const which = parts[2].toUpperCase(); // A, B or BOTH
+              const hex = tryHex(parts[3]);
+              if (!hex) return;
+              if (which === 'A' || which === 'B') {
+                cellOverrides.perWeek[which] = { color: hex, t: Date.now() };
+              } else if (which === 'BOTH' || which === 'ALL') {
+                cellOverrides.perWeek['A'] = { color: hex, t: Date.now() };
+                cellOverrides.perWeek['B'] = { color: hex, t: Date.now() };
+              } else return;
+              localStorage.setItem('cellOverrides', JSON.stringify(cellOverrides));
+              document.querySelectorAll('.cell').forEach(el => {
+                const dIndex = Number(el.dataset.day || -1);
+                const subjGuess = (() => {
+                  const iconUrl = el.style.getPropertyValue('--cell-icon') || '';
+                  const match = iconUrl.match(/([^/\\]+)\.png/);
+                  if (!match) return null;
+                  const filename = match[1];
+                  return Object.keys(iconMap).find(k => iconMap[k] && iconMap[k].includes(filename));
+                })();
+                const pIndex = Number(el.dataset.period || -1);
+                el.style.setProperty('--cell-colour', getCellColourFor(dIndex, pIndex, subjGuess));
+              });
+            }
+
+            else if (mode === 'period' && parts.length >= 4) {
+              const period = Number(parts[2]);
+              const hex = tryHex(parts[3]);
+              if (!hex || isNaN(period) || period < 0 || period > 6) return;
+              cellOverrides.perPeriod[`${period}`] = { color: hex, t: Date.now() };
+              localStorage.setItem('cellOverrides', JSON.stringify(cellOverrides));
+              document.querySelectorAll('.cell').forEach(el => {
+                const pIndex = Number(el.dataset.period || -1);
+                if (pIndex === period) {
+                  const dIndex = Number(el.dataset.day || -1);
+                  const subjGuess = (() => {
+                    const iconUrl = el.style.getPropertyValue('--cell-icon') || '';
+                    const match = iconUrl.match(/([^/\\]+)\.png/);
+                    if (!match) return null;
+                    const filename = match[1];
+                    return Object.keys(iconMap).find(k => iconMap[k] && iconMap[k].includes(filename));
+                  })();
+                  el.style.setProperty('--cell-colour', getCellColourFor(dIndex, pIndex, subjGuess));
+                }
+              });
+            }
+
+            else if (mode === 'cell' && parts.length >= 5) {
+              const day = Number(parts[2]);
+              const period = Number(parts[3]);
+              const hex = tryHex(parts[4]);
+              if (!hex || isNaN(day) || isNaN(period) || day < 1 || day > 10 || period < 0 || period > 6) return;
+              cellOverrides.perCell[`${day}-${period}`] = { color: hex, t: Date.now() };
+              localStorage.setItem('cellOverrides', JSON.stringify(cellOverrides));
+              // update that specific cell if present
+              document.querySelectorAll('.cell').forEach(el => {
+                const dIndex = Number(el.dataset.day || -1);
+                const pIndex = Number(el.dataset.period || -1);
+                if (dIndex === day - 1 && pIndex === period) {
+                  const iconUrl = el.style.getPropertyValue('--cell-icon') || '';
+                  const match = iconUrl.match(/([^/\\]+)\.png/);
+                  const subjGuess = match ? Object.keys(iconMap).find(k => iconMap[k] && iconMap[k].includes(match[1])) : null;
+                  el.style.setProperty('--cell-colour', getCellColourFor(dIndex, pIndex, subjGuess));
+                }
+              });
+            }
+            // unknown usage: ignore
           }
 
   }
