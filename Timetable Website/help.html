@@ -153,7 +153,7 @@
 
         <a class="commandtext">/cellcolour [Mode] [Arg1] [Arg2] [Colour]</a><br>
         Sets colours of cells.
-        <br> Modes can be "all", "week", "day", "period", or "cell".
+        <br> Modes can be "all", "week", "day", "period", "subject", or "cell".
         <br><br> 1. <a class="commandtext" style="font-size: 1rem;">[Mode] = "all"</a>: Affects all cells.
         <br>[Arg1]: not required.
         <br>[Colour]: Hex code of desired cell colour (e.g., #FF5733).
@@ -166,7 +166,10 @@
         <br><br> 4. <a class="commandtext" style="font-size: 1rem;">[Mode] = "period"</a>: Affects a period's cells.
         <br>[Arg1]: Period number (int 0-6).
         <br>[Colour]: Hex code of desired cell colour (e.g., #FF5733).
-        <br><br> 5. <a class="commandtext" style="font-size: 1rem;">[Mode] = "cell"</a>: Affects a specific cell.
+        <br><br> 5. <a class="commandtext" style="font-size: 1rem;">[Mode] = "subject"</a>: Affects all cells of a subject.
+        <br>[Arg1]: Subject code (e.g., "eng" for English).
+        <br>[Colour]: Hex code of desired cell colour (e.g., #FF5733).
+        <br><br> 6. <a class="commandtext" style="font-size: 1rem;">[Mode] = "cell"</a>: Affects a specific cell.
         <br>[Arg1]: Day number (int 1-10).
         <br>[Arg2]: Period number (int 0-6).
         <br>[Colour]: Hex code of desired cell colour (e.g., #FF5733).
@@ -334,5 +337,5 @@
       }
     })();
     </script>
-
+<p class="text" style="opacity:50%">v0.4.1 MORE AND MORE STYLES!</p>
 </body>
