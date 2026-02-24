@@ -69,7 +69,7 @@
       </p>
     </div>
     <br>
-    <h2 class="text collapsed" style="font-size: 2rem; margin-top: 2vh;">Timetable Setup</h2>
+    <h2 class="text collapsed" style="font-size: 2rem; margin-top: 2vh;">Setup</h2>
     <div class="collapsible-content collapsed">
       <p class="text">
           Here are the commands you can use to customize <br> your timetable experience.
@@ -307,27 +307,66 @@
     // Parallax support for help page (reads bgSettings from localStorage)
     (function() {
       try {
-        const raw = localStorage.getItem('bgSettings');
         const bgSettings = raw ? JSON.parse(raw) : null;
-        const PARALLAX_STRENGTH = 20;
+        const PARALLAX_STRENGTH = 10;
 
         function initParallax() {
-          if (!bgSettings || !bgSettings.parallax) return;
 
           // Make background slightly larger for parallax movement
           document.body.style.backgroundSize = '110%';
           document.body.style.backgroundPosition = 'center';
 
+          // Prepare base color (from computed style) and helpers for HSL adjustments
+          function rgbToHsl(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            if (max === min) { h = s = 0; }
+            else {
+              const d = max - min;
+              s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+              switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+              }
+              h /= 6;
+            }
+            return [h * 360, s * 100, l * 100];
+          }
+
+          function parseRgbString(rgbStr) {
+            // Expects formats like 'rgb(39,34,66)' or 'rgba(39,34,66,1)'
+            const nums = rgbStr.match(/\d+/g);
+            if (!nums || nums.length < 3) return null;
+            return nums.slice(0,3).map(n => parseInt(n,10));
+          }
+
+          // Read base color from computed style (fallback to the declared colour)
+          const computedBg = getComputedStyle(document.body).backgroundColor || '#272242';
+          const rgbBase = parseRgbString(computedBg) || [39,34,66];
+          const [baseH, baseS, baseL] = rgbToHsl(rgbBase[0], rgbBase[1], rgbBase[2]);
+
           document.addEventListener('mousemove', (e) => {
-            const x = e.clientX / window.innerWidth - 0.5;
-            const y = e.clientY / window.innerHeight - 0.5;
+              const x = e.clientX / window.innerWidth - 0.5;
+              const y = e.clientY / window.innerHeight - 0.5;
 
-            const offsetX = -x * PARALLAX_STRENGTH;
-            const offsetY = -y * PARALLAX_STRENGTH;
+              const offsetX = -x * PARALLAX_STRENGTH;
+              const offsetY = -y * PARALLAX_STRENGTH;
 
-            document.body.style.backgroundPosition =
-              `calc(50% + ${offsetX}px) calc(50% + ${offsetY}px)`;
-          });
+              document.body.style.backgroundPosition =
+                `calc(50% + ${offsetX}px) calc(50% + ${offsetY}px)`;
+
+              // Subtle 'shiny' color shift: small hue and lightness offsets
+              const HUE_RANGE = 8; // degrees
+              const LIGHT_RANGE = 1; // percent
+
+              const newH = baseH + (x * HUE_RANGE);
+              const newL = Math.max(0, Math.min(100, baseL - (y * LIGHT_RANGE)));
+
+              // Apply via HSL for smooth, perceptible but subtle shift
+              document.body.style.backgroundColor = `hsl(${newH.toFixed(1)}, ${baseS.toFixed(1)}%, ${newL.toFixed(1)}%)`;
+            });
         }
 
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initParallax);

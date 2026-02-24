@@ -25,9 +25,10 @@ body {
 .helpbody {
     margin: 0;
     font-family: monospace;
-    background: #272242; /* url('bg.png') center / contain no-repeat fixed; */
+    background: #262142; /* url('bg.png') center / contain no-repeat fixed; */
     color: white; 
     background-image: url('assets/helpbg.png');
+    background-blend-mode: overlay;
     background-size: 110%; /* cover the viewport */
     background-repeat: no-repeat;
     background-position: center center;
