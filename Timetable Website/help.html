@@ -304,14 +304,12 @@
     </script> 
 
     <script>
-    // Parallax support for help page (reads bgSettings from localStorage)
+    // Parallax support for help page (always enabled)
     (function() {
       try {
-        const bgSettings = raw ? JSON.parse(raw) : null;
         const PARALLAX_STRENGTH = 10;
 
         function initParallax() {
-
           // Make background slightly larger for parallax movement
           document.body.style.backgroundSize = '110%';
           document.body.style.backgroundPosition = 'center';
